@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "827326079916",
+    "project_id": "agribioloop-6122b",
+    "storage_bucket": "agribioloop-6122b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827326079916:android:61c6db5ccdfe870a9a5009",
+        "android_client_info": {
+          "package_name": "com.Agribioloop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHTRgass02KfpyWW3OZKYjUBlnMs8Fl2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827326079916:android:a3487704f2691a889a5009",
+        "android_client_info": {
+          "package_name": "com.example.agribioloop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHTRgass02KfpyWW3OZKYjUBlnMs8Fl2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
