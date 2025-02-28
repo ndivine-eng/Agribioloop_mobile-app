@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Center(
         child: Text(
-          "Firebase Configured! 🎉",
+          "Firebase Configured 🎉",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
