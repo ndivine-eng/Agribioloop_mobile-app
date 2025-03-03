@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'home_screen.dart'; // Import Home Screen
+import 'register_screen.dart'; // Navigate to Register Screen
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -11,11 +11,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigate to Home Screen after 3 seconds
+    // Navigate to Register Screen after 3 seconds
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => RegisterScreen()),
       );
     });
   }
@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center, // Added this!
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // App Logo
             Image.asset(
