@@ -1,174 +1,124 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/auth_provider.dart';
+import 'main_screen.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerWidget {
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
-}
-
-class _RegisterScreenState extends State<RegisterScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  bool _acceptTerms = false;
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this, initialIndex: 1);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // App Logo
-            Image.asset(
-              'assets/images/logo.png', 
-              height: 50,
-            ),
-
+            // Logo
+            Center(child: Image.asset('assets/images/logo.png', height: 80)),
             SizedBox(height: 10),
-
+            
             // App Name
-            Text(
-              "AgriBioLoop",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.green[700],
-              ),
-            ),
-
-            SizedBox(height: 20),
-
-            // Tab Bar (Sign Up | Register)
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                indicator: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+            Center(
+              child: Text(
+                "AgriBioLoop",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
                 ),
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.black54,
-                tabs: [
-                  Tab(text: "Sign up"),
-                  Tab(text: "Register"),
-                ],
               ),
             ),
-
             SizedBox(height: 20),
-
-            // Input Fields
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  // Sign Up Tab (for now, just placeholder)
-                  Center(child: Text("Sign Up Form Placeholder")),
-
-                  // Register Tab
-                  buildRegisterForm(),
-                ],
+            
+            // Toggle Buttons (Sign up & Register)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 40),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text("Sign up", style: TextStyle(color: Colors.black54)),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 40),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black54),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text("Register", style: TextStyle(color: Colors.black)),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            
+            // Email Field
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Email address",
+                border: UnderlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 10),
+            
+            // Password Field
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Password",
+                border: UnderlineInputBorder(),
+                suffixIcon: Icon(Icons.visibility_off),
+              ),
+              obscureText: true,
+            ),
+            SizedBox(height: 10),
+            
+            // Confirm Password Field
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Confirm Password",
+                border: UnderlineInputBorder(),
+                suffixIcon: Icon(Icons.visibility_off),
+              ),
+              obscureText: true,
+            ),
+            SizedBox(height: 10),
+            
+            // Terms and Conditions Checkbox
+            Row(
+              children: [
+                Checkbox(value: true, onChanged: (value) {}),
+                Text("I accept the terms and policies"),
+              ],
+            ),
+            SizedBox(height: 20),
+            
+            // Register Button
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 14),
+              ),
+              onPressed: () {
+                ref.read(authProvider.notifier).login(); // Update authentication state
+                
+                // Navigate to MainScreen after registration
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainScreen()),
+                );
+              },
+              child: Text(
+                "Register",
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildRegisterForm() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          buildTextField("Email address", Icons.email, false),
-          SizedBox(height: 10),
-          buildTextField("Password", Icons.lock, true, isPassword: true),
-          SizedBox(height: 10),
-          buildTextField("Confirm Password", Icons.lock, true, isPassword: true),
-
-          SizedBox(height: 15),
-
-          // Terms & Policies Checkbox
-          Row(
-            children: [
-              Checkbox(
-                value: _acceptTerms,
-                onChanged: (value) {
-                  setState(() {
-                    _acceptTerms = value!;
-                  });
-                },
-                activeColor: Colors.green,
-              ),
-              Text("I accept the terms and policies"),
-            ],
-          ),
-
-          SizedBox(height: 15),
-
-          // Register Button
-          SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: _acceptTerms ? () {} : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                disabledBackgroundColor: Colors.green.shade200,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                "Register",
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildTextField(String label, IconData icon, bool obscureText,
-      {bool isPassword = false}) {
-    return TextField(
-      obscureText: isPassword ? obscureText : false,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: Colors.grey),
-        suffixIcon: isPassword
-            ? IconButton(
-                icon: Icon(
-                  obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  setState(() {
-                    if (label == "Password") {
-                      _obscurePassword = !_obscurePassword;
-                    } else {
-                      _obscureConfirmPassword = !_obscureConfirmPassword;
-                    }
-                  });
-                },
-              )
-            : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
         ),
       ),
     );
