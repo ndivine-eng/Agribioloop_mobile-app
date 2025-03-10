@@ -52,11 +52,11 @@ class HomeScreen extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Image.asset('assets/images/property_info.png', height: 100),
+                  child: Image.asset('assets/images/property.png' ,height: 100),
                 ),
                 SizedBox(width: 10),
                 Expanded(
-                  child: Image.asset('assets/images/maritim.png', height: 100),
+                  child: Image.asset('assets/images/property.png', height: 100),
                 ),
               ],
             ),
