@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'screens/splash_screen.dart'; // Import your splash screen
-import './screens/home_screen.dart' ;  // Import your main/home screen
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'screens/splash_screen.dart'; // Ensure correct path
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(MyApp());
+void main() {
+  runApp(ProviderScope(child: MyApp())); // Wrap app with ProviderScope
 }
 
 class MyApp extends StatelessWidget {
@@ -17,7 +11,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(), // Start with the Splash Screen
+      title: 'AgriBioLoop',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: SplashScreen(), // Start from Splash Screen
     );
   }
 }
