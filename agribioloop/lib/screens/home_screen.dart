@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'sell_products_screen.dart'; // Import the new screen
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -52,7 +53,7 @@ class HomeScreen extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Image.asset('assets/images/property.png' ,height: 200),
+                  child: Image.asset('assets/images/property.png', height: 200),
                 ),
                 SizedBox(width: 10),
                 Expanded(
@@ -82,11 +83,19 @@ class HomeScreen extends StatelessWidget {
                     Text("Schedule Pickup"),
                   ],
                 ),
-                Column(
-                  children: [
-                    Icon(Icons.shopping_cart, color: Colors.green, size: 40),
-                    Text("Sell Recycled"),
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SellProductsScreen()),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Icon(Icons.shopping_cart, color: Colors.green, size: 40),
+                      Text("Sell Recycled"),
+                    ],
+                  ),
                 ),
               ],
             ),
