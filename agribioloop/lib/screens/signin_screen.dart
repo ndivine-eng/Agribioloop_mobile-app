@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_provider.dart';
 import 'main_screen.dart';
-import 'signin_screen.dart';
+import 'register_screen.dart';
 
-class RegisterScreen extends ConsumerWidget {
+class LoginScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
@@ -31,15 +31,24 @@ class RegisterScreen extends ConsumerWidget {
             ),
             SizedBox(height: 20),
             
-            // Toggle Buttons (Sign up & Register)
+            // Toggle Buttons (Sign in & Register)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 40),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black54),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text("Sign in", style: TextStyle(color: Colors.black)),
+                ),
+                SizedBox(width: 10),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                      MaterialPageRoute(builder: (context) => RegisterScreen()),
                     );
                   },
                   child: Container(
@@ -48,23 +57,14 @@ class RegisterScreen extends ConsumerWidget {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text("Sign up", style: TextStyle(color: Colors.black54)),
+                    child: Text("Register", style: TextStyle(color: Colors.black54)),
                   ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 40),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black54),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text("Register", style: TextStyle(color: Colors.black)),
                 ),
               ],
             ),
             SizedBox(height: 20),
             
-        // Email Field
+            // Email Field
             TextField(
               decoration: InputDecoration(
                 labelText: "Email address",
@@ -84,27 +84,18 @@ class RegisterScreen extends ConsumerWidget {
             ),
             SizedBox(height: 10),
             
-            // Confirm Password Field
-            TextField(
-              decoration: InputDecoration(
-                labelText: "Confirm Password",
-                border: UnderlineInputBorder(),
-                suffixIcon: Icon(Icons.visibility_off),
+            // Forgot Password
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {},
+                child: Text("Forgot password?", style: TextStyle(color: Colors.green)),
               ),
-              obscureText: true,
             ),
-            SizedBox(height: 10),
             
-            // Terms and Conditions Checkbox
-            Row(
-              children: [
-                Checkbox(value: true, onChanged: (value) {}),
-                Text("I accept the terms and policies"),
-              ],
-            ),
             SizedBox(height: 20),
             
-            // Register Button
+            // Login Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
@@ -116,14 +107,14 @@ class RegisterScreen extends ConsumerWidget {
               onPressed: () {
                 ref.read(authProvider.notifier).login(); // Update authentication state
                 
-                // Navigate to MainScreen after registration
+                // Navigate to MainScreen after login
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => MainScreen()),
                 );
               },
               child: Text(
-                "Register",
+                "Sign in",
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
             ),
@@ -132,4 +123,4 @@ class RegisterScreen extends ConsumerWidget {
       ),
     );
   }
-}    
+}
