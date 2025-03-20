@@ -1,18 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(RecycleApp());
-}
-
-class RecycleApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: RecycleScreen(),
-    );
-  }
-}
+import 'home_screen.dart'; // Import HomeScreen
 
 class RecycleScreen extends StatefulWidget {
   @override
@@ -43,7 +30,9 @@ class _RecycleScreenState extends State<RecycleScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context); // Navigates back to HomeScreen
+          },
         ),
         title: Text("Recycle", style: TextStyle(color: Colors.black)),
         centerTitle: true,
