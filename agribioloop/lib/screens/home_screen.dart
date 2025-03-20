@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'schedule.dart'; 
 import 'recycle_screen.dart';
+import 'marketplace_screen.dart'; 
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -27,21 +28,19 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       drawer: _buildDrawer(context),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeroSection(),
-              SizedBox(height: 20),
-              _buildProfileCard(),
-              SizedBox(height: 20),
-              Text("My Services", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
-              _buildServiceGrid(context),
-            ],
-          ),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Hello, John Doe", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            SizedBox(height: 20),
+            _buildImageBanner(),
+            SizedBox(height: 20),
+            Text("My Services", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
+            _buildServiceCards(context),
+          ],
         ),
       ),
     );
@@ -71,6 +70,9 @@ class HomeScreen extends StatelessWidget {
           _buildDrawerItem(Icons.recycling, "Recycle", () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => RecycleScreen()));
           }),
+          _buildDrawerItem(Icons.store, "Marketplace", () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MarketplaceScreen()));
+          }),
         ],
       ),
     );
@@ -84,69 +86,16 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroSection() {
-    return Container(
-      width: double.infinity,
-      height: 180,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        image: DecorationImage(
-          image: AssetImage('assets/images/hero_image.jpg'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.black.withOpacity(0.4),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Welcome to AgriBioLoop", style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
-            SizedBox(height: 5),
-            Text("Sustainable solutions for a greener future", style: TextStyle(color: Colors.white, fontSize: 16)),
-          ],
-        ),
-      ),
+  Widget _buildImageBanner() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: Image.asset('assets/images/property.png', height: 180, width: double.infinity, fit: BoxFit.cover),
     );
   }
 
-  Widget _buildProfileCard() {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.green,
-              child: Icon(Icons.person, color: Colors.white, size: 30),
-            ),
-            SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("John Doe", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Text("Eco Enthusiast", style: TextStyle(color: Colors.grey)),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildServiceGrid(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
+  Widget _buildServiceCards(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _buildServiceCard(Icons.recycling, "Convert Waste", () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => RecycleScreen()));
@@ -154,24 +103,26 @@ class HomeScreen extends StatelessWidget {
         _buildServiceCard(Icons.schedule, "Schedule Pickup", () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleScreen()));
         }),
+        _buildServiceCard(Icons.store, "Marketplace", () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MarketplaceScreen()));
+        }),
       ],
     );
   }
 
-  Widget _buildServiceCard(IconData icon, String label, VoidCallback onTap) {
+  Widget _buildServiceCard(IconData icon, String title, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Card(
         elevation: 3,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(12),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: Colors.green, size: 40),
-              SizedBox(height: 10),
-              Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+              Icon(icon, size: 40, color: Colors.green),
+              SizedBox(height: 8),
+              Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
