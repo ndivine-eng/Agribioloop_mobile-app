@@ -1,18 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(ScheduleApp());
-}
-
-class ScheduleApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ScheduleScreen(),
-    );
-  }
-}
+import 'pickup_screen.dart'; // Import the pickup screen
 
 class ScheduleScreen extends StatelessWidget {
   final List<Map<String, String>> scheduleData = [
@@ -109,7 +96,13 @@ class ScheduleScreen extends StatelessWidget {
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                // Navigate to PickupScreen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PickupScreen()),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

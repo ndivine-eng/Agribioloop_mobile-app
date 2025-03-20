@@ -1,28 +1,13 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(ScheduleApp());
-}
-
-class ScheduleApp extends StatelessWidget {
+class PickupScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ScheduleScreen(),
-    );
-  }
+  _PickupScreenState createState() => _PickupScreenState();
 }
 
-class ScheduleScreen extends StatefulWidget {
-  @override
-  _ScheduleScreenState createState() => _ScheduleScreenState();
-}
-
-class _ScheduleScreenState extends State<ScheduleScreen> {
+class _PickupScreenState extends State<PickupScreen> {
   int? _selectedSchedule; // To track selected radio button
 
-  // Sample schedule data
   final List<Map<String, String>> schedules = [
     {"name": "JOHN", "day": "Monday", "date": "21/2/2022"},
     {"name": "Shah Alam", "day": "Tuesday", "date": "21/2/2022"},
@@ -37,7 +22,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context); // Navigate back to ScheduleScreen
+          },
         ),
         title: Text("List of Schedule", style: TextStyle(color: Colors.black)),
         centerTitle: true,

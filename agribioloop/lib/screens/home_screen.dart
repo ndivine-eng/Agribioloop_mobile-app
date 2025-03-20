@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'schedule.dart'; // Import Schedule Screen
-import 'recycle_screen.dart'; // Import Recycle Screen
+import 'schedule.dart'; 
+import 'recycle_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -26,46 +26,52 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Colors.green),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Menu", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 10),
-                  Text("Welcome, User", style: TextStyle(color: Colors.white, fontSize: 16)),
-                ],
-              ),
-            ),
-            _buildDrawerItem(Icons.home, "Home", () {
-              Navigator.pop(context);
-            }),
-            _buildDrawerItem(Icons.schedule, "Schedule Pickup", () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleScreen()));
-            }),
-            _buildDrawerItem(Icons.recycling, "Recycle", () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => RecycleScreen()));
-            }),
-          ],
+      drawer: _buildDrawer(context),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeroSection(),
+              SizedBox(height: 20),
+              _buildProfileCard(),
+              SizedBox(height: 20),
+              Text("My Services", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              SizedBox(height: 10),
+              _buildServiceGrid(context),
+            ],
+          ),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Hello, John Doe", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            SizedBox(height: 20),
-            Text("My Services", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
-            _buildImageSection(),
-            SizedBox(height: 20),
-            _buildServiceIcons(context),
-          ],
-        ),
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(color: Colors.green),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Menu", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                SizedBox(height: 10),
+                Text("Welcome, User", style: TextStyle(color: Colors.white, fontSize: 16)),
+              ],
+            ),
+          ),
+          _buildDrawerItem(Icons.home, "Home", () {
+            Navigator.pop(context);
+          }),
+          _buildDrawerItem(Icons.schedule, "Schedule Pickup", () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleScreen()));
+          }),
+          _buildDrawerItem(Icons.recycling, "Recycle", () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => RecycleScreen()));
+          }),
+        ],
       ),
     );
   }
@@ -78,43 +84,97 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildImageSection() {
-    return Row(
-      children: [
-        Expanded(
-          child: Image.asset('assets/images/property.png', height: 200, fit: BoxFit.cover),
+  Widget _buildHeroSection() {
+    return Container(
+      width: double.infinity,
+      height: 180,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        image: DecorationImage(
+          image: AssetImage('assets/images/hero_image.jpg'),
+          fit: BoxFit.cover,
         ),
-        SizedBox(width: 10),
-        Expanded(
-          child: Image.asset('assets/images/property.png', height: 100, fit: BoxFit.cover),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.black.withOpacity(0.4),
         ),
-      ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Welcome to AgriBioLoop", style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+            SizedBox(height: 5),
+            Text("Sustainable solutions for a greener future", style: TextStyle(color: Colors.white, fontSize: 16)),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildServiceIcons(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  Widget _buildProfileCard() {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.green,
+              child: Icon(Icons.person, color: Colors.white, size: 30),
+            ),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("John Doe", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text("Eco Enthusiast", style: TextStyle(color: Colors.grey)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildServiceGrid(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
       children: [
-        _buildServiceItem(Icons.recycling, "Convert Waste", () {
+        _buildServiceCard(Icons.recycling, "Convert Waste", () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => RecycleScreen()));
         }),
-        _buildServiceItem(Icons.schedule, "Schedule Pickup", () {
+        _buildServiceCard(Icons.schedule, "Schedule Pickup", () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleScreen()));
         }),
       ],
     );
   }
 
-  Widget _buildServiceItem(IconData icon, String label, VoidCallback onTap) {
+  Widget _buildServiceCard(IconData icon, String label, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        children: [
-          Icon(icon, color: Colors.green, size: 40),
-          SizedBox(height: 5),
-          Text(label, style: TextStyle(fontSize: 14)),
-        ],
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: Colors.green, size: 40),
+              SizedBox(height: 10),
+              Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
       ),
     );
   }
