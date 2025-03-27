@@ -1,45 +1,46 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_provider.dart';
-import 'register_screen.dart';
-import 'home_screen.dart';
+import 'signin_screen.dart';
+import 'main_screen.dart';
 
-class SplashScreen extends ConsumerWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    
     Future.delayed(Duration(seconds: 3), () {
-      final isAuthenticated = ref.read(authProvider); // Check auth state
+      final user = ref.read(authProvider);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => isAuthenticated ? HomeScreen() : RegisterScreen(),
+          builder: (context) => user != null ? MainScreen() : SignInScreen(),
         ),
       );
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.green.shade800, Colors.green.shade400],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      backgroundColor: Colors.white,
+      body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset('assets/images/logo.png', height: 100),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Text(
               "AgriBioLoop",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
             ),
-            SizedBox(height: 50),
-            CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+            SizedBox(height: 20),
+            CircularProgressIndicator(color: Colors.green),
           ],
         ),
       ),

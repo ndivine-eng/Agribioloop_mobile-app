@@ -1,22 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'home_screen.dart';
 import 'profile_screen.dart';
 import 'history_screen.dart';
 import 'notifications_screen.dart';
+import '../providers/auth_provider.dart';
+import 'signin_screen.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerWidget {
   @override
-  _MainScreenState createState() => _MainScreenState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authProvider);
+
+    // If user is not logged in, redirect to SignInScreen
+    if (user == null) {
+      Future.microtask(() => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => SignInScreen()),
+          ));
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    return MainScreenContent();
+  }
 }
 
-class _MainScreenState extends State<MainScreen> {
+class MainScreenContent extends StatefulWidget {
+  @override
+  _MainScreenContentState createState() => _MainScreenContentState();
+}
+
+class _MainScreenContentState extends State<MainScreenContent> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
     HomeScreen(),
     NotificationsScreen(),
     HistoryScreen(),
-    ProfileScreen(),
+    ProfileScreen(), // Profile now includes Logout
   ];
 
   void _onItemTapped(int index) {
@@ -36,34 +57,10 @@ class _MainScreenState extends State<MainScreen> {
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Stack(
-              children: [
-                Icon(Icons.notifications),
-                Positioned(
-                  right: 0,
-                  child: CircleAvatar(
-                    radius: 6,
-                    backgroundColor: Colors.red,
-                    child: Text('2', style: TextStyle(fontSize: 10, color: Colors.white)),
-                  ),
-                ),
-              ],
-            ),
-            label: 'Notification',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'My History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notification'),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'My History'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );

@@ -39,7 +39,7 @@ class RegisterScreen extends ConsumerWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                      MaterialPageRoute(builder: (context) => SignInScreen()),
                     );
                   },
                   child: Container(
