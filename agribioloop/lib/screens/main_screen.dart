@@ -1,65 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'home_screen.dart';
+import 'marketplace_screen.dart';
+import 'recycle_screen.dart';
 import 'profile_screen.dart';
-import 'history_screen.dart';
-import 'notifications_screen.dart';
-import '../providers/auth_provider.dart';
-import 'signin_screen.dart';
+
+final bottomNavIndexProvider = StateProvider<int>((ref) => 0);
 
 class MainScreen extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authProvider);
-
-    // If user is not logged in, redirect to SignInScreen
-    if (user == null) {
-      Future.microtask(() => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => SignInScreen()),
-          ));
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    return MainScreenContent();
-  }
-}
-
-class MainScreenContent extends StatefulWidget {
-  @override
-  _MainScreenContentState createState() => _MainScreenContentState();
-}
-
-class _MainScreenContentState extends State<MainScreenContent> {
-  int _selectedIndex = 0;
-
   final List<Widget> _screens = [
     HomeScreen(),
-    NotificationsScreen(),
-    HistoryScreen(),
-    ProfileScreen(), // Profile now includes Logout
+    MarketplaceScreen(),
+    RecycleScreen(),
+    ProfileScreen(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentIndex = ref.watch(bottomNavIndexProvider);
+
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: _screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
+        currentIndex: currentIndex,
+        onTap: (index) => ref.read(bottomNavIndexProvider.notifier).state = index,
         type: BottomNavigationBarType.fixed,
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notification'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'My History'),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Market'),
+          BottomNavigationBarItem(icon: Icon(Icons.recycling), label: 'Recycle'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),

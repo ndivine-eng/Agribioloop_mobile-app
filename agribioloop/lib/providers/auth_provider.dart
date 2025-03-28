@@ -12,13 +12,13 @@ class AuthNotifier extends StateNotifier<User?> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  /// Sign in with Google
+  // === Google Sign-In ===
   Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return; // User canceled login
+      if (googleUser == null) return;
 
-      final GoogleSignInAuthentication googleAuth =
+      final GoogleSignInAuthentication googleAuth = 
           await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
@@ -28,24 +28,50 @@ class AuthNotifier extends StateNotifier<User?> {
 
       await _auth.signInWithCredential(credential);
     } catch (e) {
-      print("🔥 Google Sign-In Error: $e");
-      state = null; // Reset state on failure
+      print("Google Sign-In Error: $e");
+      rethrow;
     }
   }
 
-  /// Sign out user
+  // === Email/Password Sign-In ===
+  Future<void> signInWithEmail(String email, String password) async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      print("Email Sign-In Error: $e");
+      rethrow;
+    }
+  }
+
+  // === Email/Password Registration ===
+  Future<void> signUpWithEmail(String email, String password) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      print("Registration Error: $e");
+      rethrow;
+    }
+  }
+
+  // === Sign Out ===
   Future<void> signOut() async {
     try {
       await _auth.signOut();
       await _googleSignIn.signOut();
       state = null;
     } catch (e) {
-      print("🔥 Sign-Out Error: $e");
+      print("Sign-Out Error: $e");
+      rethrow;
     }
   }
 }
 
-/// Auto-disposing provider to clean up memory when not in use
-final authProvider = StateNotifierProvider.autoDispose<AuthNotifier, User?>((ref) {
+final authProvider = StateNotifierProvider<AuthNotifier, User?>((ref) {
   return AuthNotifier();
 });

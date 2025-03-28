@@ -1,9 +1,40 @@
 import 'package:flutter/material.dart';
-import 'schedule.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'schedule.dart';
 import 'recycle_screen.dart';
-import 'marketplace_screen.dart'; 
+import 'marketplace_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String userName = "User"; // Default name
+  User? currentUser = FirebaseAuth.instance.currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    if (currentUser != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser!.uid)
+          .get();
+      
+      if (userDoc.exists) {
+        setState(() {
+          userName = userDoc['name'] ?? "User"; // Use stored name or default
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +64,8 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Hello, John Doe", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            Text("Hello, $userName", 
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             SizedBox(height: 20),
             _buildImageBanner(),
             SizedBox(height: 20),
@@ -57,7 +89,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Text("Menu", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                 SizedBox(height: 10),
-                Text("Welcome, User", style: TextStyle(color: Colors.white, fontSize: 16)),
+                Text("Welcome, $userName", style: TextStyle(color: Colors.white, fontSize: 16)),
               ],
             ),
           ),
