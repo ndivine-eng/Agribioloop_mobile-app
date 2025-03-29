@@ -83,4 +83,5 @@ class DefaultFirebaseOptions {
     authDomain: 'agribioloop-6122b.firebaseapp.com',
     storageBucket: 'agribioloop-6122b.firebasestorage.app',
   );
+
 }
