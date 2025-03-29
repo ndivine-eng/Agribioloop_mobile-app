@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String userName = "User"; 
+  String userName = "User";
   User? currentUser = FirebaseAuth.instance.currentUser;
 
   @override
@@ -27,10 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
           .collection('users')
           .doc(currentUser!.uid)
           .get();
-      
-      if (userDoc.exists) {
+
+      if (userDoc.exists && userDoc.data() is Map<String, dynamic>) {
         setState(() {
-          userName = userDoc['name'] ?? "User"; // Use stored name or default
+          userName = userDoc['name'] ?? "User";
         });
       }
     }
@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Hello, $userName", 
+              "Hello, $userName",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
@@ -74,62 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 20),
             Text("My Services", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
-
-            // Fix: Removed duplicate image rows
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RecycleScreen()),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Icon(Icons.recycling, color: Colors.green, size: 40),
-                      Text("Convert Waste"),
-                    ],
-                  ),
-                ),
-                Column(
-                  children: [
-                    Icon(Icons.feedback, color: Colors.green, size: 40),
-                    Text("Feedback"),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ScheduleScreen()),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Icon(Icons.schedule, color: Colors.green, size: 40),
-                      Text("Schedule Pickup"),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SellProductsScreen()),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Icon(Icons.shopping_cart, color: Colors.green, size: 40),
-                      Text("Sell Recycled"),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
             _buildServiceCards(context),
           ],
         ),
