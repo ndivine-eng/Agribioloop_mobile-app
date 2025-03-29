@@ -65,34 +65,33 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Hello, $userName", 
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            Text(
+              "Hello, $userName", 
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 20),
             _buildImageBanner(),
             SizedBox(height: 20),
             Text("My Services", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
 
-            Row(
-              children: [
-                Expanded(
-                  child: Image.asset('assets/images/property.png', height: 200),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Image.asset('assets/images/property.png', height: 100),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
+            // Fix: Removed duplicate image rows
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Column(
-                  children: [
-                    Icon(Icons.recycling, color: Colors.green, size: 40),
-                    Text("Convert Waste"),
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RecycleScreen()),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Icon(Icons.recycling, color: Colors.green, size: 40),
+                      Text("Convert Waste"),
+                    ],
+                  ),
                 ),
                 Column(
                   children: [
@@ -100,11 +99,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text("Feedback"),
                   ],
                 ),
-                Column(
-                  children: [
-                    Icon(Icons.schedule, color: Colors.green, size: 40),
-                    Text("Schedule Pickup"),
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ScheduleScreen()),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Icon(Icons.schedule, color: Colors.green, size: 40),
+                      Text("Schedule Pickup"),
+                    ],
+                  ),
                 ),
                 GestureDetector(
                   onTap: () {
@@ -120,6 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
+              ],
+            ),
+            SizedBox(height: 20),
             _buildServiceCards(context),
           ],
         ),
