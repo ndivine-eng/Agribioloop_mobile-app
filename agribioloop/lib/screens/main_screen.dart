@@ -4,6 +4,9 @@ import 'home_screen.dart';
 import 'marketplace_screen.dart';
 import 'recycle_screen.dart';
 import 'profile_screen.dart';
+import 'history_screen.dart';
+import 'notifications_screen.dart';
+import 'theme_selection_screen.dart';
 
 final bottomNavIndexProvider = StateProvider<int>((ref) => 0);
 

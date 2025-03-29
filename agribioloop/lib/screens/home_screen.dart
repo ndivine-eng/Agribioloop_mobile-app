@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'sell_products_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'schedule.dart';
@@ -11,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String userName = "User"; // Default name
+  String userName = "User"; 
   User? currentUser = FirebaseAuth.instance.currentUser;
 
   @override
@@ -71,6 +72,54 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 20),
             Text("My Services", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
+
+            Row(
+              children: [
+                Expanded(
+                  child: Image.asset('assets/images/property.png', height: 200),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Image.asset('assets/images/property.png', height: 100),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    Icon(Icons.recycling, color: Colors.green, size: 40),
+                    Text("Convert Waste"),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Icon(Icons.feedback, color: Colors.green, size: 40),
+                    Text("Feedback"),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Icon(Icons.schedule, color: Colors.green, size: 40),
+                    Text("Schedule Pickup"),
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SellProductsScreen()),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      Icon(Icons.shopping_cart, color: Colors.green, size: 40),
+                      Text("Sell Recycled"),
+                    ],
+                  ),
+                ),
             _buildServiceCards(context),
           ],
         ),
