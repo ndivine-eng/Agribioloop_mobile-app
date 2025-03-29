@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'theme_selection_screen.dart';
+import 'address_page.dart';
 
 class ProfileScreen extends ConsumerWidget {
   @override
@@ -40,7 +41,7 @@ class ProfileScreen extends ConsumerWidget {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).textTheme.bodyLarge?.color, // Fix for null safety
+              color: Theme.of(context).textTheme.bodyLarge?.color,
             ),
           ),
           Text(
@@ -49,7 +50,12 @@ class ProfileScreen extends ConsumerWidget {
           ),
           SizedBox(height: 20),
           _buildProfileOption(context, "Account"),
-          _buildProfileOption(context, "Address"),
+          _buildProfileOption(context, "Address", onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddressPage()),
+            );
+          }),
           _buildProfileOption(context, "Theme", onTap: () {
             Navigator.push(
               context,
@@ -80,7 +86,7 @@ class ProfileScreen extends ConsumerWidget {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).shadowColor.withOpacity(0.2), // Fix: Named argument
+              color: Theme.of(context).shadowColor.withOpacity(0.2),
               blurRadius: 5,
             ),
           ],
@@ -100,11 +106,11 @@ class ProfileScreen extends ConsumerWidget {
   Widget _buildBottomNavigation(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface, // Fix: Correct property
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor, // Fix: Named argument
+            color: Theme.of(context).shadowColor,
             blurRadius: 10,
           ),
         ],
