@@ -119,8 +119,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).shadowColor.withOpacity(0.2),
-              blurRadius: 5,
+              color: Theme.of(context).shadowColor.withOpacity(0.1), // Reduced contrast
+              blurRadius: 4,
             ),
           ],
         ),
@@ -182,8 +182,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).shadowColor.withOpacity(0.2),
-              blurRadius: 5,
+              color: Theme.of(context).shadowColor.withOpacity(0.1), // Softer shadow for less contrast
+              blurRadius: 4,
             ),
           ],
         ),
