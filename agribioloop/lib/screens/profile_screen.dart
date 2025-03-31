@@ -1,11 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import '../providers/auth_provider.dart';
 import 'theme_selection_screen.dart';
 import 'address_page.dart';
+import 'signin_screen.dart';
 
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  File? _image;
+
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
@@ -24,12 +44,24 @@ class ProfileScreen extends ConsumerWidget {
               Positioned(
                 top: 140,
                 left: MediaQuery.of(context).size.width / 2 - 50,
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Theme.of(context).cardColor,
+                child: GestureDetector(
+                  onTap: _pickImage,
                   child: CircleAvatar(
-                    radius: 45,
-                    backgroundImage: AssetImage('assets/images/profile2.jpeg'),
+                    radius: 50,
+                    backgroundColor: Theme.of(context).cardColor,
+                    child: _image != null
+                        ? ClipOval(
+                            child: Image.file(
+                              _image!,
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : CircleAvatar(
+                            radius: 45,
+                            backgroundImage: AssetImage('assets/images/profile2.jpeg'),
+                          ),
                   ),
                 ),
               ),
@@ -49,24 +81,28 @@ class ProfileScreen extends ConsumerWidget {
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
           SizedBox(height: 20),
-          _buildProfileOption(context, "Account"),
-          _buildProfileOption(context, "Address", onTap: () {
+          _buildProfileOption(context, "Account", Icons.person),
+          _buildProfileOption(context, "Address", Icons.location_on, onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AddressPage()),
             );
           }),
-          _buildProfileOption(context, "Theme", onTap: () {
+          _buildProfileOption(context, "Theme", Icons.color_lens, onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => ThemeSelectionScreen()),
             );
           }),
-          _buildProfileOption(context, "Type of Waste"),
+          _buildProfileOption(context, "Type of Waste", Icons.recycling),
           SizedBox(height: 10),
           TextButton(
-            onPressed: () {
-              // Handle Logout
+            onPressed: () async {
+              await ref.read(authProvider.notifier).signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => SignInScreen()),
+              );
             },
             child: Text("Logout", style: TextStyle(color: Colors.red)),
           ),
@@ -77,7 +113,7 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProfileOption(BuildContext context, String title, {VoidCallback? onTap}) {
+  Widget _buildProfileOption(BuildContext context, String title, IconData icon, {VoidCallback? onTap}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: Container(
@@ -92,6 +128,7 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ),
         child: ListTile(
+          leading: Icon(icon, color: Theme.of(context).iconTheme.color),
           title: Text(
             title,
             style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
@@ -105,6 +142,7 @@ class ProfileScreen extends ConsumerWidget {
 
   Widget _buildBottomNavigation(BuildContext context) {
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -113,6 +151,14 @@ class ProfileScreen extends ConsumerWidget {
             color: Theme.of(context).shadowColor,
             blurRadius: 10,
           ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          IconButton(icon: Icon(Icons.home), onPressed: () {}),
+          IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
+          IconButton(icon: Icon(Icons.person), onPressed: () {}),
         ],
       ),
     );
