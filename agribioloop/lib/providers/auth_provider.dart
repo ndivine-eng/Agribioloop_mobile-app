@@ -10,16 +10,31 @@ class AuthNotifier extends StateNotifier<User?> {
   }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId: '827326079916-01smpba6v2uj50dg1ssmrvohdeomctug.apps.googleusercontent.com', // Added clientId
+    scopes: ['email', 'profile'], 
+  );
 
   // === Google Sign-In ===
   Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return;
+      if (googleUser == null) {
+        throw FirebaseAuthException(
+          code: 'aborted',
+          message: 'Sign in aborted by user',
+        );
+      }
 
       final GoogleSignInAuthentication googleAuth = 
           await googleUser.authentication;
+
+      if (googleAuth.idToken == null) {
+        throw FirebaseAuthException(
+          code: 'missing-id-token',
+          message: 'Google Sign-In failed: Missing ID Token',
+        );
+      }
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -27,6 +42,9 @@ class AuthNotifier extends StateNotifier<User?> {
       );
 
       await _auth.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      print("Firebase Auth Error: ${e.code} - ${e.message}");
+      rethrow;
     } catch (e) {
       print("Google Sign-In Error: $e");
       rethrow;
@@ -40,8 +58,11 @@ class AuthNotifier extends StateNotifier<User?> {
         email: email,
         password: password,
       );
+    } on FirebaseAuthException catch (e) {
+      print("Email Sign-In Error: ${e.code} - ${e.message}");
+      rethrow;
     } catch (e) {
-      print("Email Sign-In Error: $e");
+      print("Unexpected Error: $e");
       rethrow;
     }
   }
@@ -53,8 +74,11 @@ class AuthNotifier extends StateNotifier<User?> {
         email: email,
         password: password,
       );
+    } on FirebaseAuthException catch (e) {
+      print("Registration Error: ${e.code} - ${e.message}");
+      rethrow;
     } catch (e) {
-      print("Registration Error: $e");
+      print("Unexpected Error: $e");
       rethrow;
     }
   }

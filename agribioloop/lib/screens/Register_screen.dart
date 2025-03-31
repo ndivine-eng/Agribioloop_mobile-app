@@ -47,6 +47,32 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
   }
 
+  Future<void> _signInWithGoogle() async {
+    setState(() => _isLoading = true);
+    
+    try {
+      await ref.read(authProvider.notifier).signInWithGoogle();
+      
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Google Sign-In failed: ${e.toString()}"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
   bool _validateForm() {
     if (_passwordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -203,6 +229,40 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         "Register",
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
+              ),
+              const SizedBox(height: 20),
+              
+              // OR divider
+              Row(
+                children: const [
+                  Expanded(child: Divider()),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text("OR"),
+                  ),
+                  Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: 20),
+              
+              // Google Sign-In Button
+              OutlinedButton.icon(
+                icon: Image.asset(
+                  'assets/images/google_logo.png', // Make sure to add Google logo asset
+                  height: 24,
+                ),
+                label: const Text(
+                  'Continue with Google',
+                  style: TextStyle(color: Colors.black87),
+                ),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  side: const BorderSide(color: Colors.grey),
+                ),
+                onPressed: _isLoading ? null : _signInWithGoogle,
               ),
               const SizedBox(height: 20),
             ],
