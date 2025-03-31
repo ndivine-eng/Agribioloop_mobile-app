@@ -13,6 +13,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _nameController = TextEditingController(); // New Controller for Name
   bool _acceptTerms = false;
   bool _isLoading = false;
   bool _rememberMe = false;
@@ -23,13 +24,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     if (!_validateForm()) return;
 
     setState(() => _isLoading = true);
-    
+
     try {
+      // Sign up user with email, password, and name
       await ref.read(authProvider.notifier).signUpWithEmail(
-            _emailController.text.trim(),
-            _passwordController.text.trim(),
-          );
-      
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        _nameController.text.trim(), // Pass the name here
+      );
+
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -40,7 +43,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Registration failed: \${e.toString()}"),
+            content: Text("Registration failed: ${e.toString()}"),
             backgroundColor: Colors.red,
           ),
         );
@@ -91,6 +94,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _nameController.dispose(); // Dispose of name controller
     super.dispose();
   }
 
@@ -150,6 +154,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ),
               const SizedBox(height: 20),
               TextField(
+                controller: _nameController, // Name input field
+                decoration: const InputDecoration(labelText: "Full Name", border: UnderlineInputBorder()),
+              ),
+              const SizedBox(height: 10),
+              TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: "Email address", border: UnderlineInputBorder()),
                 keyboardType: TextInputType.emailAddress,
@@ -204,6 +213,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                 onPressed: _isLoading ? null : _registerUser,
                 child: _isLoading ? CircularProgressIndicator(color: Colors.white) : Text("Register", style: TextStyle(color: Colors.white)),
+              ),
+              const SizedBox(height: 10),
+              // Google Sign-In with Icon
+              OutlinedButton.icon(
+                onPressed: () {
+                  ref.read(authProvider.notifier).signInWithGoogle();
+                },
+                icon: Image.asset('assets/images/google_logo.png', height: 20), 
+                label: const Text("Sign in with Google", style: TextStyle(color: Colors.black)),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignInScreen()),
+                  );
+                },
+                child: const Text("Already have an account? Login", style: TextStyle(color: Colors.green, fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ],
           ),

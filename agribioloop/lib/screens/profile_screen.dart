@@ -106,8 +106,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             },
             child: Text("Logout", style: TextStyle(color: Colors.red)),
           ),
-          Spacer(),
-          _buildBottomNavigation(context),
         ],
       ),
     );
@@ -136,30 +134,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           trailing: Icon(Icons.arrow_forward_ios, color: Theme.of(context).iconTheme.color),
           onTap: onTap,
         ),
-      ),
-    );
-  }
-
-  Widget _buildBottomNavigation(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).shadowColor,
-            blurRadius: 10,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          IconButton(icon: Icon(Icons.home), onPressed: () {}),
-          IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {}),
-          IconButton(icon: Icon(Icons.person), onPressed: () {}),
-        ],
       ),
     );
   }
