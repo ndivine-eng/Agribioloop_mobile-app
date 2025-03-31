@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'theme_selection_screen.dart';
+import '../main.dart'; // Import to access themeProvider
 import 'address_page.dart';
 
 class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ThemeMode currentTheme = ref.watch(themeProvider);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
@@ -56,12 +57,7 @@ class ProfileScreen extends ConsumerWidget {
               MaterialPageRoute(builder: (context) => AddressPage()),
             );
           }),
-          _buildProfileOption(context, "Theme", onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ThemeSelectionScreen()),
-            );
-          }),
+          _buildThemeDropdown(context, ref, currentTheme),
           _buildProfileOption(context, "Type of Waste"),
           SizedBox(height: 10),
           TextButton(
@@ -73,6 +69,47 @@ class ProfileScreen extends ConsumerWidget {
           Spacer(),
           _buildBottomNavigation(context),
         ],
+      ),
+    );
+  }
+
+  Widget _buildThemeDropdown(BuildContext context, WidgetRef ref, ThemeMode currentTheme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).shadowColor.withOpacity(0.2),
+              blurRadius: 5,
+            ),
+          ],
+        ),
+        child: ListTile(
+          title: Text("Theme", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+          trailing: DropdownButton<ThemeMode>(
+            value: currentTheme,
+            underline: SizedBox(),
+            icon: Icon(Icons.arrow_drop_down, color: Theme.of(context).iconTheme.color),
+            onChanged: (ThemeMode? newTheme) {
+              if (newTheme != null) {
+                ref.read(themeProvider.notifier).state = newTheme;
+              }
+            },
+            items: [
+              DropdownMenuItem(
+                value: ThemeMode.light,
+                child: Text("Light Mode"),
+              ),
+              DropdownMenuItem(
+                value: ThemeMode.dark,
+                child: Text("Dark Mode"),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
