@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_provider.dart';
 import 'main_screen.dart';
 import 'register_screen.dart';
+import 'forgot_password_screen.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   @override
@@ -142,6 +143,21 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   suffixIcon: Icon(Icons.visibility_off),
                 ),
                 obscureText: true,
+              ),
+              const SizedBox(height: 10),
+
+              // Forgot Password
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                    );
+                  },
+                  child: const Text("Forgot Password?", style: TextStyle(color: Colors.blue)),
+                ),
               ),
               const SizedBox(height: 20),
 
