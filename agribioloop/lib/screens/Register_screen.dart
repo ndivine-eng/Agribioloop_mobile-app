@@ -15,6 +15,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _acceptTerms = false;
   bool _isLoading = false;
+  bool _rememberMe = false;
+  bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
 
   Future<void> _registerUser() async {
     if (!_validateForm()) return;
@@ -37,33 +40,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Registration failed: ${e.toString()}"),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> _signInWithGoogle() async {
-    setState(() => _isLoading = true);
-    
-    try {
-      await ref.read(authProvider.notifier).signInWithGoogle();
-      
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Google Sign-In failed: ${e.toString()}"),
+            content: Text("Registration failed: \${e.toString()}"),
             backgroundColor: Colors.red,
           ),
         );
@@ -74,6 +51,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   bool _validateForm() {
+    if (_passwordController.text.length < 8 ||
+        !_passwordController.text.contains(RegExp(r'[A-Z]')) ||
+        !_passwordController.text.contains(RegExp(r'[0-9]'))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Password must be at least 8 characters, contain an uppercase letter and a number"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+
     if (_passwordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -116,11 +105,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 40),
-              // Logo
               Center(child: Image.asset('assets/images/logo.png', height: 80)),
               const SizedBox(height: 10),
-              
-              // App Name
               const Center(
                 child: Text(
                   "AgriBioLoop",
@@ -132,8 +118,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              
-              // Toggle Buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -165,43 +149,47 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ],
               ),
               const SizedBox(height: 20),
-              
-              // Email Field
               TextField(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: "Email address",
-                  border: UnderlineInputBorder(),
-                ),
+                decoration: const InputDecoration(labelText: "Email address", border: UnderlineInputBorder()),
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 10),
-              
-              // Password Field
               TextField(
                 controller: _passwordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Password",
                   border: UnderlineInputBorder(),
-                  suffixIcon: Icon(Icons.visibility_off),
+                  suffixIcon: IconButton(
+                    icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () => setState(() => _passwordVisible = !_passwordVisible),
+                  ),
                 ),
-                obscureText: true,
+                obscureText: !_passwordVisible,
               ),
               const SizedBox(height: 10),
-              
-              // Confirm Password Field
               TextField(
                 controller: _confirmPasswordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Confirm Password",
                   border: UnderlineInputBorder(),
-                  suffixIcon: Icon(Icons.visibility_off),
+                  suffixIcon: IconButton(
+                    icon: Icon(_confirmPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () => setState(() => _confirmPasswordVisible = !_confirmPasswordVisible),
+                  ),
                 ),
-                obscureText: true,
+                obscureText: !_confirmPasswordVisible,
               ),
               const SizedBox(height: 10),
-              
-              // Terms Checkbox
+              Row(
+                children: [
+                  Checkbox(
+                    value: _rememberMe,
+                    onChanged: (value) => setState(() => _rememberMe = value ?? false),
+                  ),
+                  const Text("Remember Me"),
+                ],
+              ),
               Row(
                 children: [
                   Checkbox(
@@ -212,59 +200,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ],
               ),
               const SizedBox(height: 20),
-              
-              // Register Button
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                 onPressed: _isLoading ? null : _registerUser,
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        "Register",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
+                child: _isLoading ? CircularProgressIndicator(color: Colors.white) : Text("Register", style: TextStyle(color: Colors.white)),
               ),
-              const SizedBox(height: 20),
-              
-              // OR divider
-              Row(
-                children: const [
-                  Expanded(child: Divider()),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text("OR"),
-                  ),
-                  Expanded(child: Divider()),
-                ],
-              ),
-              const SizedBox(height: 20),
-              
-              // Google Sign-In Button
-              OutlinedButton.icon(
-                icon: Image.asset(
-                  'assets/images/google_logo.png', // Make sure to add Google logo asset
-                  height: 24,
-                ),
-                label: const Text(
-                  'Continue with Google',
-                  style: TextStyle(color: Colors.black87),
-                ),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  side: const BorderSide(color: Colors.grey),
-                ),
-                onPressed: _isLoading ? null : _signInWithGoogle,
-              ),
-              const SizedBox(height: 20),
             ],
           ),
         ),

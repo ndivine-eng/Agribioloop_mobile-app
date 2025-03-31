@@ -11,7 +11,7 @@ class AuthNotifier extends StateNotifier<User?> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId: '827326079916-01smpba6v2uj50dg1ssmrvohdeomctug.apps.googleusercontent.com', // Added clientId
+    clientId: '827326079916-01smpba6v2uj50dg1ssmrvohdeomctug.apps.googleusercontent.com',
     scopes: ['email', 'profile'], 
   );
 
@@ -76,6 +76,19 @@ class AuthNotifier extends StateNotifier<User?> {
       );
     } on FirebaseAuthException catch (e) {
       print("Registration Error: ${e.code} - ${e.message}");
+      rethrow;
+    } catch (e) {
+      print("Unexpected Error: $e");
+      rethrow;
+    }
+  }
+
+  // === Reset Password ===
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      print("Password Reset Error: ${e.code} - ${e.message}");
       rethrow;
     } catch (e) {
       print("Unexpected Error: $e");
