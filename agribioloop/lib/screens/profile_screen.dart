@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../providers/auth_provider.dart';
@@ -9,6 +10,8 @@ import 'signin_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ThemeMode currentTheme = ref.watch(themeProvider);
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
@@ -26,6 +29,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
@@ -88,6 +92,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               MaterialPageRoute(builder: (context) => AddressPage()),
             );
           }),
+          _buildThemeDropdown(context, ref, currentTheme),
+          _buildProfileOption(context, "Type of Waste"),
           _buildProfileOption(context, "Theme", Icons.color_lens, onTap: () {
             Navigator.push(
               context,
@@ -112,7 +118,48 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       ),
     );
   }
+  Widget _buildThemeDropdown(BuildContext context, WidgetRef ref, ThemeMode currentTheme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).shadowColor.withOpacity(0.2),
+              blurRadius: 5,
+            ),
+          ],
+        ),
+        child: ListTile(
+          title: Text("Theme", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+          trailing: DropdownButton<ThemeMode>(
+            value: currentTheme,
+            underline: SizedBox(),
+            icon: Icon(Icons.arrow_drop_down, color: Theme.of(context).iconTheme.color),
+            onChanged: (ThemeMode? newTheme) {
+              if (newTheme != null) {
+                ref.read(themeProvider.notifier).state = newTheme;
+              }
+            },
+            items: [
+              DropdownMenuItem(
+                value: ThemeMode.light,
+                child: Text("Light Mode"),
+              ),
+              DropdownMenuItem(
+                value: ThemeMode.dark,
+                child: Text("Dark Mode"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
+  Widget _buildProfileOption(BuildContext context, String title, {VoidCallback? onTap}) {
   Widget _buildProfileOption(BuildContext context, String title, IconData icon, {VoidCallback? onTap}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
