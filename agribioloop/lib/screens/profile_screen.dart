@@ -4,19 +4,17 @@ import '../main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../providers/auth_provider.dart';
-import 'theme_selection_screen.dart';
 import 'address_page.dart';
 import 'signin_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ThemeMode currentTheme = ref.watch(themeProvider);
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   File? _image;
+  bool _isThemeExpanded = false;
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -29,6 +27,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeMode currentTheme = ref.watch(themeProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -93,13 +92,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             );
           }),
           _buildThemeDropdown(context, ref, currentTheme),
-          _buildProfileOption(context, "Type of Waste"),
-          _buildProfileOption(context, "Theme", Icons.color_lens, onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ThemeSelectionScreen()),
-            );
-          }),
           _buildProfileOption(context, "Type of Waste", Icons.recycling),
           SizedBox(height: 10),
           TextButton(
@@ -112,10 +104,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             },
             child: Text("Logout", style: TextStyle(color: Colors.red)),
           ),
+          Spacer(),
         ],
       ),
     );
   }
+
   Widget _buildThemeDropdown(BuildContext context, WidgetRef ref, ThemeMode currentTheme) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -130,34 +124,55 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
           ],
         ),
-        child: ListTile(
-          title: Text("Theme", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
-          trailing: DropdownButton<ThemeMode>(
-            value: currentTheme,
-            underline: SizedBox(),
-            icon: Icon(Icons.arrow_drop_down, color: Theme.of(context).iconTheme.color),
-            onChanged: (ThemeMode? newTheme) {
-              if (newTheme != null) {
-                ref.read(themeProvider.notifier).state = newTheme;
-              }
-            },
-            items: [
-              DropdownMenuItem(
-                value: ThemeMode.light,
-                child: Text("Light Mode"),
+        child: Column(
+          children: [
+            ListTile(
+              leading: Icon(Icons.color_lens, color: Theme.of(context).iconTheme.color),
+              title: Text("Theme", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
+              trailing: Icon(
+                _isThemeExpanded ? Icons.arrow_drop_down : Icons.arrow_forward_ios,
+                color: Theme.of(context).iconTheme.color,
               ),
-              DropdownMenuItem(
-                value: ThemeMode.dark,
-                child: Text("Dark Mode"),
+              onTap: () {
+                setState(() {
+                  _isThemeExpanded = !_isThemeExpanded;
+                });
+              },
+            ),
+            if (_isThemeExpanded)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Text("Light Mode"),
+                      leading: Icon(Icons.light_mode),
+                      onTap: () {
+                        ref.read(themeProvider.notifier).state = ThemeMode.light;
+                        setState(() {
+                          _isThemeExpanded = false;
+                        });
+                      },
+                    ),
+                    ListTile(
+                      title: Text("Dark Mode"),
+                      leading: Icon(Icons.dark_mode),
+                      onTap: () {
+                        ref.read(themeProvider.notifier).state = ThemeMode.dark;
+                        setState(() {
+                          _isThemeExpanded = false;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildProfileOption(BuildContext context, String title, {VoidCallback? onTap}) {
   Widget _buildProfileOption(BuildContext context, String title, IconData icon, {VoidCallback? onTap}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
