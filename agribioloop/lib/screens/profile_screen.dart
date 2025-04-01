@@ -6,6 +6,8 @@ import 'dart:io';
 import '../providers/auth_provider.dart';
 import 'address_page.dart';
 import 'signin_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   @override
@@ -15,6 +17,31 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   File? _image;
   bool _isThemeExpanded = false;
+  String userName = "User";
+  String userEmail = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
+
+      if (userDoc.exists && userDoc.data() is Map<String, dynamic>) {
+        setState(() {
+          userName = userDoc['name'] ?? "User";
+          userEmail = currentUser.email ?? "";
+        });
+      }
+    }
+  }
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -72,7 +99,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
           SizedBox(height: 60),
           Text(
-            "John Doe",
+            userName, // Display dynamic username
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -80,7 +107,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
           ),
           Text(
-            "Samakhusi, Kathmandu",
+            userEmail, // Display dynamic email
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
           SizedBox(height: 20),
