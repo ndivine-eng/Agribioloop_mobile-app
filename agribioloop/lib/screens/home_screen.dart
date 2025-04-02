@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'schedule.dart';
 import 'recycle_screen.dart';
 import 'marketplace_screen.dart';
+import 'learning_page.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -74,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 20),
             Text("My Services", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
-            _buildServiceCards(context),
+            _buildServiceGrid(context),
           ],
         ),
       ),
@@ -108,6 +109,9 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildDrawerItem(Icons.store, "Marketplace", () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => MarketplaceScreen()));
           }),
+          _buildDrawerItem(Icons.video_library, "Learning", () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LearningPage()));
+          }),
         ],
       ),
     );
@@ -128,9 +132,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildServiceCards(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  Widget _buildServiceGrid(BuildContext context) {
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      childAspectRatio: 1.2,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
       children: [
         _buildServiceCard(Icons.recycling, "Convert Waste", () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => RecycleScreen()));
@@ -140,6 +148,9 @@ class _HomeScreenState extends State<HomeScreen> {
         }),
         _buildServiceCard(Icons.store, "Marketplace", () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => MarketplaceScreen()));
+        }),
+        _buildServiceCard(Icons.video_library, "Learning", () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LearningPage()));
         }),
       ],
     );
@@ -154,10 +165,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Padding(
           padding: EdgeInsets.all(12),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 40, color: Colors.green),
               SizedBox(height: 8),
-              Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+              Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
