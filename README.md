@@ -16,6 +16,7 @@ Agricultural waste contributes to 14% of global greenhouse gas emissions (FAO, 2
 - **🛒 Marketplace for Recycled Products**: Farmers can sell compost, biogas, and animal feed.
 - **📢 Real-time Notifications**: Get alerts on waste collection and marketplace updates.
 - **📍 Route Optimization**: Uses Google Maps API for efficient waste collection planning.
+- **📝 CRUD Operations**: Farmers can **Create, Read, Update, and Delete** waste entries and product listings.
 - **📡 Offline Mode (Future Enhancement)**: Users can store data locally with Hive.
 - **💳 Payment Integration (Future Enhancement)**: Secure transactions using Stripe.
 - **📞 SMS Notifications (Future Enhancement)**: For users without smartphones, via Twilio.
@@ -99,6 +100,12 @@ Agricultural waste contributes to 14% of global greenhouse gas emissions (FAO, 2
 - Buyers can filter listings by location, price, and category.
 - Future updates will include secure payment processing.
 
+### **5️⃣ CRUD Operations**
+- **Create**: Farmers can add waste entries and product listings.
+- **Read**: Users can view available products and waste entries.
+- **Update**: Farmers can edit details of their waste collection requests and product listings.
+- **Delete**: Users can remove waste entries or marketplace listings if needed.
+
 ---
 
 ## 🧪 Testing & Debugging
@@ -119,9 +126,9 @@ This provider manages authentication state using the `AuthNotifier` class, which
 
 ## 👥 Team Members
 
-- **Nubuhoro Divine** 
+- **Nubuhoro Divine**  
 - **Kwizera Yvette**  
-- **Umutoni Kevine** 
+- **Umutoni Kevine**  
 
 ---
 
@@ -190,12 +197,5 @@ git commit -m "fix(scheduler): Optimize Google Maps API calls"
 
 ---
 
-
-
----
-
 ## 📎 Resources
-- **Figma UI Design**: [AgriBioLoop UI](#)
-- **GitHub Repository**: [AgriBioLoop on GitHub](#)
-
-Happy coding! 🚀
+- **Figma UI Design**: [AgriBioLoop Prototype](https://www.figma.com/proto/prPhThB07YWrUcIzcYpJY6/AgriBioLoop?node-id=148-33)
